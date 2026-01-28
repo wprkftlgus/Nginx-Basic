@@ -22,21 +22,21 @@ server {
 
 server {
     listen 443 ssl;
-    server_name api.sihyeonzon.online;
+    server_name api.sihyeonzon.online;      # api server listen at 443, ssl is mendatory
 
     ssl_certificate /etc/letsencrypt/live/api.sihyeonzon.online/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/api.sihyeonzon.online/privkey.pem;
 
     location / {
-        proxy_pass http://127.0.0.1:3000;
+        proxy_pass http://127.0.0.1:3000;      # http://127.0.0.1:3000 is node.js IP
         proxy_http_version 1.1;
 
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host $host;   # Node.js doesn't know who enter, let know which routes users came through.
+        proxy_set_header X-Real-IP $remote_addr;    # Get the real user IP address
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;     #This forwards the real client IP to the backend when using Nginx as a reverse proxy. It preserves the IP history so logging, security, and rate limiting work correctly.
+        proxy_set_header X-Forwarded-Proto $scheme;     # Let know which routes users came through, https or http.
     }
-} # api server listen at 443, ssl is mendatory,  http://127.0.0.1:3000 is node.js IP,  proxy_set_header X-Real-IP $remote_addr : get the user IP, proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for : Make the user IP list 
+}  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for : Make the user IP list 
 
 # Enable the site (symbolic link)
 sudo ln -s /etc/nginx/sites-available/api \
